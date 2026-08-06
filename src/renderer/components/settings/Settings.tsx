@@ -16,12 +16,12 @@ import { isMac, isWindows } from "renderer/utils";
 import { AutoStartToggle } from "./AutoStartToggle";
 import { DeveloperOptionsButton } from "./DeveloperOptions";
 import { DiscordBranchPicker } from "./DiscordBranchPicker";
+import { DoHUrlInput } from "./DoHUrlInput";
 import { NotificationBadgeToggle } from "./NotificationBadgeToggle";
 import { OutdatedVesktopWarning } from "./OutdatedVesktopWarning";
 import { UserAssetsButton } from "./UserAssets";
 import { VesktopSettingsSwitch } from "./VesktopSettingsSwitch";
 import { WindowsTransparencyControls } from "./WindowsTransparencyControls";
-import { DoHUrlInput } from "./DoHUrlInput";
 
 interface BooleanSetting {
     key: keyof typeof Settings.store;
@@ -152,7 +152,6 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
 
         WebRTCIPHandlingPolicyPicker,
         DoHUrlInput
-
     ],
 
     "Developer Options": [DeveloperOptionsButton]

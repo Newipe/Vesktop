@@ -179,7 +179,7 @@ function applyDohSettings() {
         });
     } else {
         app.configureHostResolver({
-            secureDnsMode: "automatic" 
+            secureDnsMode: "automatic"
         });
     }
 }
