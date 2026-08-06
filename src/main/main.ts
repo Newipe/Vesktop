@@ -121,6 +121,8 @@ function init() {
         registerScreenShareHandler();
         registerMediaPermissionsHandler();
 
+        applyDohSettings();
+
         bootstrap();
 
         app.on("activate", () => {
@@ -172,6 +174,8 @@ Settings.addChangeListener("webRTCIPHandlingPolicy", () => {
 });
 
 function applyDohSettings() {
+    if (!app.isReady()) return;
+
     if (Settings.store.enableDoh && Settings.store.dohUrl) {
         app.configureHostResolver({
             secureDnsMode: "secure",
@@ -183,8 +187,6 @@ function applyDohSettings() {
         });
     }
 }
-
-applyDohSettings();
 
 Settings.addChangeListener("enableDoh", applyDohSettings);
 Settings.addChangeListener("dohUrl", applyDohSettings);
