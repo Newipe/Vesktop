@@ -23,7 +23,7 @@ jobs:
 
         steps:
             - uses: actions/checkout@v7
-            - uses: pnpm/action-setup@v6 # Install pnpm using packageManager key in package.json
+            - uses: pnpm/action-setup@v6
 
             - name: Use Node.js 24
               uses: actions/setup-node@v6
@@ -44,16 +44,10 @@ jobs:
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-            - name: Run Electron Builder
+            - name: Run Electron Builder (macOS - No Signing)
               if: ${{ matrix.platform == 'mac' }}
               run: |
-                  echo "$API_KEY" > apple.p8
                   pnpm electron-builder --${{ matrix.platform }} --publish always
               env:
                   GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  CSC_LINK: ${{ secrets.APPLE_SIGNING_CERT }}
-                  CSC_KEY_PASSWORD: ${{ secrets.APPLE_SIGNING_CERT_PASSWORD }}
-                  API_KEY: ${{ secrets.APPLE_API_KEY }}
-                  APPLE_API_KEY: apple.p8
-                  APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
-                  APPLE_API_ISSUER: ${{ secrets.APPLE_API_ISSUER }}
+                  CSC_IDENTITY_AUTO_DISCOVERY: false
