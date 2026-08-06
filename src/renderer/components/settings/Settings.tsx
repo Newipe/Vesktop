@@ -21,6 +21,7 @@ import { OutdatedVesktopWarning } from "./OutdatedVesktopWarning";
 import { UserAssetsButton } from "./UserAssets";
 import { VesktopSettingsSwitch } from "./VesktopSettingsSwitch";
 import { WindowsTransparencyControls } from "./WindowsTransparencyControls";
+import { DoHUrlInput } from "./DoHUrlInput";
 
 interface BooleanSetting {
     key: keyof typeof Settings.store;
@@ -149,7 +150,9 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
             defaultValue: false
         },
 
-        WebRTCIPHandlingPolicyPicker
+        WebRTCIPHandlingPolicyPicker,
+        DoHUrlInput
+
     ],
 
     "Developer Options": [DeveloperOptionsButton]

@@ -14,6 +14,8 @@ export interface Settings {
         | "default_public_interface_only"
         | "default_public_and_private_interfaces"
         | "disable_non_proxied_udp";
+    enableDoh?: boolean;
+    dohUrl?: string;
     tray?: boolean;
     minimizeToTray?: boolean;
     autoStartMinimized?: boolean;
