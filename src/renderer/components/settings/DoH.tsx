@@ -28,7 +28,7 @@ const DOH_URLS: Record<string, string> = {
     opendns: "https://doh.opendns.com/dns-query"
 };
 
-export const DoHUrlInput: SettingsComponent = ({ settings }) => {
+export const DoH: SettingsComponent = ({ settings }) => {
     let currentProvider = "off";
     if (settings.enableDoh) {
         const predefined = DOH_PROVIDERS.find(p => DOH_URLS[p.value] === settings.dohUrl);

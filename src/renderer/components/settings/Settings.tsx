@@ -16,6 +16,7 @@ import { isMac } from "renderer/utils";
 import { AutoStartToggle } from "./AutoStartToggle";
 import { DeveloperOptionsButton } from "./DeveloperOptions";
 import { DiscordBranchPicker } from "./DiscordBranchPicker";
+import { DoH } from "./DoH";
 import { NotificationBadgeToggle } from "./NotificationBadgeToggle";
 import { OutdatedVesktopWarning } from "./OutdatedVesktopWarning";
 import { UserAssetsButton } from "./UserAssets";
@@ -145,7 +146,8 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
             description: "Opens links in a new Vesktop window instead of your web browser"
         },
 
-        WebRTCIPHandlingPolicyPicker
+        WebRTCIPHandlingPolicyPicker,
+        DoH
     ],
 
     "Developer Options": [DeveloperOptionsButton]
