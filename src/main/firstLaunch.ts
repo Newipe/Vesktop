@@ -23,6 +23,8 @@ interface Data {
     autoStart?: "on";
     importSettings?: "on";
     richPresence?: "on";
+    enableDoh?: "on";
+    dohUrl?: string;
 }
 
 export function createFirstLaunchTour() {
@@ -48,6 +50,14 @@ export function createFirstLaunchTour() {
         Settings.store.discordBranch = data.discordBranch;
         Settings.store.minimizeToTray = !!data.minimizeToTray;
         Settings.store.arRPC = !!data.richPresence;
+
+        if (data.enableDoh === "on") {
+            Settings.store.enableDoh = true;
+            Settings.store.dohUrl = data.dohUrl && data.dohUrl.trim() !== "" ? data.dohUrl.trim() : undefined;
+        } else {
+            Settings.store.enableDoh = false;
+            Settings.store.dohUrl = undefined;
+        }
 
         if (data.autoStart) autoStart.enable();
 

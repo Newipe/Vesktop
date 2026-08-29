@@ -9,10 +9,8 @@
     <style>
         body {
             height: 100vh;
-
             padding: 1.5em;
             padding-bottom: 1em;
-
             border: 1px solid var(--fg-semi-trans);
             border-top: none;
             display: flex;
@@ -23,9 +21,31 @@
         select {
             background: var(--bg);
             color: var(--fg);
-            padding: 0.3em;
-            margin: -0.3em;
+            padding: 0.4em 0.6em;
+            border: 1px solid var(--fg-semi-trans);
             border-radius: 6px;
+            width: 250px;
+            max-width: 100%;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        input[type="url"] {
+            background: var(--bg);
+            color: var(--fg);
+            padding: 0.4em 0.6em;
+            border: 1px solid var(--fg-semi-trans);
+            border-radius: 6px;
+            width: 250px;
+            max-width: 100%;
+            box-sizing: border-box;
+            font-size: 0.9rem;
+        }
+
+        input[type="url"]::placeholder {
+            color: var(--fg-secondary);
+            opacity: 0.7;
         }
 
         h1 {
@@ -85,7 +105,7 @@
             display: flex;
             justify-content: end;
             gap: 0.5em;
-            margin-top: auto;
+            margin-top: 1em;
         }
 
         button {
@@ -104,6 +124,33 @@
 
         #submit {
             background: green;
+        }
+
+        .doh-custom-input {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5em;
+        }
+
+        .doh-custom-input div {
+            flex: 1;
+        }
+
+        .doh-custom-input h2 {
+            margin: 0;
+            font-weight: normal;
+            font-size: 1.1rem;
+        }
+
+        .doh-custom-input span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--fg-secondary);
+        }
+
+        .doh-custom-input input[type="url"] {
+            margin-left: 1em;
         }
     </style>
 </head>
@@ -154,19 +201,77 @@
             </div>
             <input type="checkbox" name="minimizeToTray" checked />
         </label>
+
+        <label>
+            <div>
+                <h2>DNS over HTTPS (DoH)</h2>
+                <span>Choose a secure DNS provider to encrypt your queries</span>
+            </div>
+            <select name="dohProvider" id="dohProviderSelect">
+                <option value="off">Off (Disabled)</option>
+                <option value="cloudflare">Cloudflare (1.1.1.1)</option>
+                <option value="google">Google (dns.google)</option>
+                <option value="newipe">Newipe (newipe.qd.je) - Iran only</option>
+                <option value="quad9">Quad9 (dns.quad9.net)</option>
+                <option value="opendns">OpenDNS (doh.opendns.com)</option>
+                <option value="custom">Custom</option>
+            </select>
+        </label>
+
+        <div id="dohUrlLabel" style="display: none;" class="doh-custom-input">
+            <div>
+                <h2>Custom DoH URL</h2>
+                <span>Enter your custom DoH provider URL</span>
+            </div>
+            <input type="url" name="dohUrl" placeholder="https://example.com/dns-query" />
+        </div>
+
+        <div id="buttons">
+            <button id="cancel">Quit</button>
+            <button id="submit">Submit</button>
+        </div>
     </form>
-    <div id="buttons">
-        <button id="cancel">Quit</button>
-        <button id="submit">Submit</button>
-    </div>
 </body>
 
 <script>
+    const dohProviderSelect = document.getElementById('dohProviderSelect');
+    const dohUrlLabel = document.getElementById('dohUrlLabel');
+    const dohUrlInput = document.querySelector('input[name="dohUrl"]');
+
+    dohProviderSelect.addEventListener('change', (e) => {
+        dohUrlLabel.style.display = e.target.value === 'custom' ? 'flex' : 'none';
+        if (e.target.value !== 'custom') {
+            dohUrlInput.value = '';
+        }
+    });
+
     cancel.onclick = () => console.info("cancel");
+
     submit.onclick = e => {
         const form = document.querySelector("form");
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+
+        const provider = data.dohProvider;
+        if (provider === 'off') {
+            data.enableDoh = undefined;
+            data.dohUrl = undefined;
+        } else if (provider === 'custom') {
+            data.enableDoh = 'on';
+        } else {
+            data.enableDoh = 'on';
+            const urls = {
+                cloudflare: 'https://cloudflare-dns.com/dns-query',
+                google: 'https://dns.google/dns-query',
+                newipe: 'https://newipe.qd.je/dns-query',
+                quad9: 'https://dns.quad9.net/dns-query',
+                opendns: 'https://doh.opendns.com/dns-query'
+            };
+            data.dohUrl = urls[provider];
+        }
+
+        delete data.dohProvider;
+
         console.info("form:" + JSON.stringify(data));
         e.preventDefault();
     };

@@ -40,6 +40,9 @@ export interface Settings {
 
     spellCheckLanguages?: string[];
 
+    enableDoh?: boolean;
+    dohUrl?: string | undefined;
+
     audio?: {
         workaround?: boolean;
 
