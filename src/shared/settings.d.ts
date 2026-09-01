@@ -43,6 +43,13 @@ export interface Settings {
     enableDoh?: boolean;
     dohUrl?: string | undefined;
 
+    tlsFragmentation?: {
+        enabled: boolean;
+        packets: "tlshello";
+        length: string;
+        interval: string;
+    };
+
     audio?: {
         workaround?: boolean;
 

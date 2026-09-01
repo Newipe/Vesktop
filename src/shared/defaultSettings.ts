@@ -29,5 +29,12 @@ export const DefaultVesktopSettings: Settings = {
     splashPixelated: false,
     webRTCIPHandlingPolicy: "default",
     appBadge: true,
-    transparencyOption: "none"
+    transparencyOption: "none",
+    enableDoh: false,
+    tlsFragmentation: {
+        enabled: false,
+        packets: "tlshello",
+        length: "50-100",
+        interval: "10-20"
+    }
 };

@@ -19,6 +19,7 @@ import { DiscordBranchPicker } from "./DiscordBranchPicker";
 import { DoH } from "./DoH";
 import { NotificationBadgeToggle } from "./NotificationBadgeToggle";
 import { OutdatedVesktopWarning } from "./OutdatedVesktopWarning";
+import { TlsFragmentation } from "./TlsFragmentation";
 import { UserAssetsButton } from "./UserAssets";
 import { VesktopSettingsSwitch } from "./VesktopSettingsSwitch";
 import { WindowsTransparencyControls } from "./WindowsTransparencyControls";
@@ -147,7 +148,8 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
         },
 
         WebRTCIPHandlingPolicyPicker,
-        DoH
+        DoH,
+        TlsFragmentation
     ],
 
     "Developer Options": [DeveloperOptionsButton]
