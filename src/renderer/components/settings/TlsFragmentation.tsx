@@ -51,8 +51,8 @@ export const TlsFragmentation: SettingsComponent = ({ settings }) => {
                     <Heading tag="h5">TLS ClientHello Fragmentation</Heading>
                 </div>
                 <Paragraph className={Margins.bottom8}>
-                    Fragment the initial TLS ClientHello packet to bypass DPI-based blocking.
-                    Modeled after v2rayN/Xray behavior. Only applies to direct connections (not through system proxy).
+                    Fragment the initial TLS ClientHello packet to bypass DPI-based blocking. Modeled after v2rayN/Xray
+                    behavior. Only applies to direct connections (not through system proxy).
                 </Paragraph>
 
                 <div style={{ marginBottom: "8px" }}>
@@ -75,12 +75,14 @@ export const TlsFragmentation: SettingsComponent = ({ settings }) => {
                         style={{ marginBottom: "8px" }}
                     />
                     <Paragraph style={{ fontSize: "12px", color: "var(--text-muted)" }}>
-                        Delay between fragments in milliseconds. Use a single value (e.g., "10") or a range (e.g., "10-20").
+                        Delay between fragments in milliseconds. Use a single value (e.g., "10") or a range (e.g.,
+                        "10-20").
                     </Paragraph>
                 </div>
 
                 <Paragraph style={{ fontSize: "12px", color: "var(--text-warning)" }}>
-                    Note: This feature only works on direct connections. If a system proxy is configured, it will be used instead and TLS fragmentation will be disabled.
+                    Note: This feature only works on direct connections. If a system proxy is configured, it will be
+                    used instead and TLS fragmentation will be disabled.
                 </Paragraph>
             </div>
         </SimpleErrorBoundary>

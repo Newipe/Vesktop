@@ -4,18 +4,13 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { app, session, net } from "electron";
-import * as netModule from "net";
 import * as dns from "dns";
+import { app, net, session } from "electron";
+import * as netModule from "net";
 import { promisify } from "util";
 
-import { DISCORD_HOSTNAMES } from "./constants";
 import { Settings } from "./settings";
-import {
-    parseFragmentLength,
-    parseFragmentInterval,
-    createConnectionWithFragmentation
-} from "./tlsFragmentation";
+import { createConnectionWithFragmentation, parseFragmentInterval, parseFragmentLength } from "./tlsFragmentation";
 
 const resolveDns = promisify(dns.resolve);
 const resolveDns4 = promisify(dns.resolve4);
@@ -57,7 +52,7 @@ export async function isSystemProxyConfigured(): Promise<boolean> {
  * Returns the resolved IP addresses or null on failure.
  */
 export async function resolveThroughDoH(hostname: string): Promise<string[] | null> {
-    const dohUrl = Settings.store.dohUrl;
+    const { dohUrl } = Settings.store;
     if (!Settings.store.enableDoh || !dohUrl) {
         return null;
     }
@@ -176,7 +171,7 @@ export async function getConnectionSettings(hostname: string): Promise<Connectio
 
     return {
         useSystemProxy: false,
-        useDoH: dohEnabled && resolvedAddress !== null,
+        useDoH: !!dohEnabled && resolvedAddress !== null,
         useTlsFragmentation,
         resolvedAddress,
         tlsFragmentConfig
@@ -187,10 +182,7 @@ export async function getConnectionSettings(hostname: string): Promise<Connectio
  * Create a TCP connection to Discord with appropriate settings.
  * This handles DoH resolution and TLS fragmentation.
  */
-export async function createDiscordConnection(
-    hostname: string,
-    port: number = 443
-): Promise<netModule.Socket | null> {
+export async function createDiscordConnection(hostname: string, port: number = 443): Promise<netModule.Socket | null> {
     const settings = await getConnectionSettings(hostname);
 
     if (settings.useSystemProxy) {
@@ -207,7 +199,7 @@ export async function createDiscordConnection(
             settings.resolvedAddress,
             settings.useTlsFragmentation,
             settings.tlsFragmentConfig || { length: "50-100", interval: "10-20" },
-            IS_DEV ? (msg) => console.log(`[TLS Frag] ${msg}`) : undefined
+            IS_DEV ? msg => console.log(`[TLS Frag] ${msg}`) : undefined
         );
 
         return socket;

@@ -4,10 +4,7 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { net } from "electron";
-import * as fs from "fs";
 import * as netModule from "net";
-import * as tls from "tls";
 
 /**
  * Parse a fragment length configuration string.
@@ -187,7 +184,8 @@ export function createTlsHelloFragmentStream(
             log(`TLS fragmentation enabled, fragmenting ClientHello...`);
 
             const helloData = helloBuffer.slice(0, expectedHelloLength);
-            const remainingData = helloBuffer.length > expectedHelloLength ? helloBuffer.slice(expectedHelloLength) : null;
+            const remainingData =
+                helloBuffer.length > expectedHelloLength ? helloBuffer.slice(expectedHelloLength) : null;
 
             // Fragment the ClientHello
             fragmentAndSend(helloData, socket, config, log, () => {
@@ -220,11 +218,11 @@ export function createTlsHelloFragmentStream(
         }
     });
 
-    socket.on("error", (err) => {
+    socket.on("error", err => {
         clientSocket.destroy(err);
     });
 
-    clientSocket.on("error", (err) => {
+    clientSocket.on("error", err => {
         socket.destroy(err);
     });
 
@@ -266,7 +264,7 @@ async function fragmentAndSend(
 
             // If the buffer is full, wait for drain
             if (!written) {
-                await new Promise<void>((resolve) => {
+                await new Promise<void>(resolve => {
                     socket.once("drain", resolve);
                 });
             }
@@ -290,7 +288,7 @@ async function fragmentAndSend(
 }
 
 function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 /**
@@ -321,35 +319,38 @@ export async function createConnectionWithFragmentation(
 
         const socket = new netModule.Socket();
 
-        socket.connect({
-            host: connectHost,
-            port: port
-        }, () => {
-            log(`TCP connection established to ${connectHost}:${port}`);
+        socket.connect(
+            {
+                host: connectHost,
+                port: port
+            },
+            () => {
+                log(`TCP connection established to ${connectHost}:${port}`);
 
-            if (useFragmentation) {
-                try {
-                    const [lengthMin, lengthMax] = parseFragmentLength(fragmentConfig.length);
-                    const [intervalMin, intervalMax] = parseFragmentInterval(fragmentConfig.interval);
+                if (useFragmentation) {
+                    try {
+                        const [lengthMin, lengthMax] = parseFragmentLength(fragmentConfig.length);
+                        const [intervalMin, intervalMax] = parseFragmentInterval(fragmentConfig.interval);
 
-                    const config: TlsFragmentConfig = {
-                        lengthMin,
-                        lengthMax,
-                        intervalMin,
-                        intervalMax
-                    };
+                        const config: TlsFragmentConfig = {
+                            lengthMin,
+                            lengthMax,
+                            intervalMin,
+                            intervalMax
+                        };
 
-                    const fragmentStream = createTlsHelloFragmentStream(socket, config, log);
-                    resolve(fragmentStream);
-                } catch (err) {
-                    log(`Failed to set up TLS fragmentation: ${err}`);
-                    // Fall back to normal socket on error
+                        const fragmentStream = createTlsHelloFragmentStream(socket, config, log);
+                        resolve(fragmentStream);
+                    } catch (err) {
+                        log(`Failed to set up TLS fragmentation: ${err}`);
+                        // Fall back to normal socket on error
+                        resolve(socket);
+                    }
+                } else {
                     resolve(socket);
                 }
-            } else {
-                resolve(socket);
             }
-        });
+        );
 
         socket.on("error", reject);
 
