@@ -9,6 +9,7 @@ import "./updater";
 import "./ipc";
 import "./userAssets";
 import "./vesktopProtocol";
+import "./antiDpi";
 
 import { app, BrowserWindow, nativeTheme } from "electron";
 

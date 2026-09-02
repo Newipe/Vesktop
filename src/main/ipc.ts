@@ -180,3 +180,20 @@ function openDebugPage(page: string) {
 
 handle(IpcEvents.DEBUG_LAUNCH_GPU, () => openDebugPage("chrome://gpu"));
 handle(IpcEvents.DEBUG_LAUNCH_WEBRTC_INTERNALS, () => openDebugPage("chrome://webrtc-internals"));
+
+// Anti-DPI IPC handlers
+import { antiDpiManager } from "./antiDpi";
+
+handleSync(IpcEvents.ANTI_DPI_GET_CONFIG, () => ({
+    config: antiDpiManager.getConfig(),
+    statistics: antiDpiManager.getStatistics(),
+    isProxyActive: antiDpiManager.isProxyActive()
+}));
+
+handle(IpcEvents.ANTI_DPI_UPDATE_CONFIG, (_, updates: any) => {
+    antiDpiManager.updateConfig(updates);
+});
+
+handle(IpcEvents.ANTI_DPI_RESET_STATS, () => {
+    antiDpiManager.resetStatistics();
+});

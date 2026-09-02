@@ -56,6 +56,29 @@ export interface Settings {
         onlySpeakers?: boolean;
         onlyDefaultSpeakers?: boolean;
     };
+
+    antiDpi?: {
+        tlsFragmentation?: {
+            enabled?: boolean;
+            fragmentDelay?: number;
+            fragmentCount?: number;
+            bypassList?: string[];
+            adaptiveMode?: boolean;
+            tlsFingerprint?: "chrome" | "firefox" | "edge" | "random";
+        };
+        statistics?: {
+            totalConnections?: number;
+            successfulBypasses?: number;
+            failedBypasses?: number;
+            lastSuccessTime?: number | null;
+            lastFailureTime?: number | null;
+            currentSuccessRate?: number;
+            activeParameters?: {
+                fragmentCount: number;
+                fragmentDelay: number;
+            } | null;
+        };
+    };
 }
 
 export interface State {

@@ -17,6 +17,7 @@ import { AutoStartToggle } from "./AutoStartToggle";
 import { DeveloperOptionsButton } from "./DeveloperOptions";
 import { DiscordBranchPicker } from "./DiscordBranchPicker";
 import { DoH } from "./DoH";
+import { AntiDpi } from "./AntiDpi";
 import { NotificationBadgeToggle } from "./NotificationBadgeToggle";
 import { OutdatedVesktopWarning } from "./OutdatedVesktopWarning";
 import { UserAssetsButton } from "./UserAssets";
@@ -147,7 +148,8 @@ const SettingsOptions: Record<string, Array<BooleanSetting | SettingsComponent>>
         },
 
         WebRTCIPHandlingPolicyPicker,
-        DoH
+        DoH,
+        AntiDpi
     ],
 
     "Developer Options": [DeveloperOptionsButton]

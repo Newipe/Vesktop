@@ -102,6 +102,16 @@ export const VesktopNative = {
         launchGpu: () => invoke<void>(IpcEvents.DEBUG_LAUNCH_GPU),
         launchWebrtcInternals: () => invoke<void>(IpcEvents.DEBUG_LAUNCH_WEBRTC_INTERNALS)
     },
+    antiDpi: {
+        getConfig: () =>
+            sendSync<{
+                config: any;
+                statistics: any;
+                isProxyActive: boolean;
+            }>(IpcEvents.ANTI_DPI_GET_CONFIG),
+        updateConfig: (updates: any) => invoke<void>(IpcEvents.ANTI_DPI_UPDATE_CONFIG, updates),
+        resetStatistics: () => invoke<void>(IpcEvents.ANTI_DPI_RESET_STATS)
+    },
     commands: {
         onCommand(cb: (message: IpcMessage) => void) {
             ipcRenderer.on(IpcEvents.IPC_COMMAND, (_, message) => cb(message));
