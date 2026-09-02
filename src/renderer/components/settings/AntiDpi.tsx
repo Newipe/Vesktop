@@ -122,8 +122,7 @@ export const AntiDpi: SettingsComponent = () => {
                     <Heading tag="h5">TLS Fragmentation (Anti-DPI)</Heading>
                 </div>
                 <Paragraph className={Margins.bottom8}>
-                    Split TLS Client Hello packets to bypass Deep Packet Inspection (DPI). This feature helps bypass
-                    SNI filtering and other censorship techniques.
+                    Split TLS Client Hello packets to bypass Deep Packet Inspection (DPI). This feature helps bypass SNI filtering and other censorship techniques.
                 </Paragraph>
 
                 {isProxyActive && (
@@ -171,9 +170,7 @@ export const AntiDpi: SettingsComponent = () => {
                     </div>
 
                     <div style={{ marginBottom: "12px" }}>
-                        <Forms.FormTitle tag="label">
-                            Fragment Delay: {config.fragmentDelay}ms
-                        </Forms.FormTitle>
+                        <Forms.FormTitle tag="label">Fragment Delay: {config.fragmentDelay}ms</Forms.FormTitle>
                         <SliderInput
                             markers={[1, 20, 40, 60, 80, 100]}
                             stickToMarkers={false}

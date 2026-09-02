@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Settings } from "./settings";
-
 export interface TlsFragmentationSettings {
     enabled: boolean;
     fragmentDelay: number;
