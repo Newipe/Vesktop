@@ -12,6 +12,10 @@
         "url": "https://newipe.qd.je/dns-query"
     },
     {
+        "label": "VanillaApp (vanillapp.ir) - Requires IP registration",
+        "url": "https://dns.vanillapp.ir/dns-query"
+    },
+    {
         "label": "Quad9 (dns.quad9.net)",
         "url": "https://dns.quad9.net/dns-query"
     },
