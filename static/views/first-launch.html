@@ -209,11 +209,11 @@
             </div>
             <select name="dohProvider" id="dohProviderSelect">
                 <option value="off">Off (Disabled)</option>
-                <option value="cloudflare">Cloudflare (1.1.1.1)</option>
-                <option value="google">Google (dns.google)</option>
-                <option value="newipe">Newipe (newipe.qd.je) - Iran only</option>
-                <option value="quad9">Quad9 (dns.quad9.net)</option>
-                <option value="opendns">OpenDNS (doh.opendns.com)</option>
+                <option value="https://cloudflare-dns.com/dns-query">Cloudflare (1.1.1.1)</option>
+                <option value="https://dns.google/dns-query">Google (dns.google)</option>
+                <option value="https://newipe.qd.je/dns-query">Newipe (newipe.qd.je) - Iran only</option>
+                <option value="https://dns.quad9.net/dns-query">Quad9 (dns.quad9.net)</option>
+                <option value="https://doh.opendns.com/dns-query">OpenDNS (doh.opendns.com)</option>
                 <option value="custom">Custom</option>
             </select>
         </label>
@@ -237,6 +237,29 @@
     const dohProviderSelect = document.getElementById('dohProviderSelect');
     const dohUrlLabel = document.getElementById('dohUrlLabel');
     const dohUrlInput = document.querySelector('input[name="dohUrl"]');
+    const remoteResolversUrl = 'https://raw.githubusercontent.com/Newipe/Vesktop/main/resolvers.json';
+
+    fetch(remoteResolversUrl)
+        .then(response => response.ok ? response.json() : Promise.reject())
+        .then(value => {
+            if (!Array.isArray(value)) return;
+
+            const resolvers = value.filter(resolver =>
+                resolver &&
+                typeof resolver.label === 'string' &&
+                typeof resolver.url === 'string' &&
+                resolver.label.trim() &&
+                resolver.url.startsWith('https://')
+            );
+            if (!resolvers.length) return;
+
+            dohProviderSelect.replaceChildren(
+                new Option('Off (Disabled)', 'off'),
+                ...resolvers.map(resolver => new Option(resolver.label, resolver.url)),
+                new Option('Custom', 'custom')
+            );
+        })
+        .catch(() => {});
 
     dohProviderSelect.addEventListener('change', (e) => {
         dohUrlLabel.style.display = e.target.value === 'custom' ? 'flex' : 'none';
@@ -260,14 +283,7 @@
             data.enableDoh = 'on';
         } else {
             data.enableDoh = 'on';
-            const urls = {
-                cloudflare: 'https://cloudflare-dns.com/dns-query',
-                google: 'https://dns.google/dns-query',
-                newipe: 'https://newipe.qd.je/dns-query',
-                quad9: 'https://dns.quad9.net/dns-query',
-                opendns: 'https://doh.opendns.com/dns-query'
-            };
-            data.dohUrl = urls[provider];
+            data.dohUrl = provider;
         }
 
         delete data.dohProvider;

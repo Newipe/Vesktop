@@ -6,33 +6,35 @@
 
 import { Heading, Margins, Paragraph } from "@vencord/types/components";
 import { Select, TextInput } from "@vencord/types/webpack/common";
+import { useEffect, useState } from "react";
 
+import { DEFAULT_DOH_RESOLVERS, parseDohResolvers, REMOTE_DOH_RESOLVERS_URL } from "../../../shared/doh";
 import { SimpleErrorBoundary } from "../SimpleErrorBoundary";
 import { SettingsComponent } from "./Settings";
 
-const DOH_PROVIDERS = [
-    { label: "Off (Disabled)", value: "off" },
-    { label: "Cloudflare (1.1.1.1)", value: "cloudflare" },
-    { label: "Google (dns.google)", value: "google" },
-    { label: "Newipe (newipe.qd.je) - Iran only", value: "newipe" },
-    { label: "Quad9 (dns.quad9.net)", value: "quad9" },
-    { label: "OpenDNS (doh.opendns.com)", value: "opendns" },
-    { label: "Custom", value: "custom" }
-];
-
-const DOH_URLS: Record<string, string> = {
-    cloudflare: "https://cloudflare-dns.com/dns-query",
-    google: "https://dns.google/dns-query",
-    newipe: "https://newipe.qd.je/dns-query",
-    quad9: "https://dns.quad9.net/dns-query",
-    opendns: "https://doh.opendns.com/dns-query"
-};
-
 export const DoH: SettingsComponent = ({ settings }) => {
+    const [resolvers, setResolvers] = useState(DEFAULT_DOH_RESOLVERS);
+
+    useEffect(() => {
+        fetch(REMOTE_DOH_RESOLVERS_URL)
+            .then(response => response.json())
+            .then(value => {
+                const remoteResolvers = parseDohResolvers(value);
+                if (remoteResolvers) setResolvers(remoteResolvers);
+            })
+            .catch(() => {});
+    }, []);
+
+    const providers = [
+        { label: "Off (Disabled)", value: "off" },
+        ...resolvers.map(resolver => ({ label: resolver.label, value: resolver.url })),
+        { label: "Custom", value: "custom" }
+    ];
+
     let currentProvider = "off";
     if (settings.enableDoh) {
-        const predefined = DOH_PROVIDERS.find(p => DOH_URLS[p.value] === settings.dohUrl);
-        currentProvider = predefined ? predefined.value : "custom";
+        const predefined = resolvers.find(resolver => resolver.url === settings.dohUrl);
+        currentProvider = predefined ? predefined.url : "custom";
     }
 
     const handleProviderChange = (value: string) => {
@@ -44,7 +46,7 @@ export const DoH: SettingsComponent = ({ settings }) => {
             settings.dohUrl = "";
         } else {
             settings.enableDoh = true;
-            settings.dohUrl = DOH_URLS[value];
+            settings.dohUrl = value;
         }
     };
 
@@ -61,7 +63,7 @@ export const DoH: SettingsComponent = ({ settings }) => {
                 <div style={{ marginBottom: currentProvider === "custom" ? "8px" : "0" }}>
                     <Select
                         placeholder="Off (Disabled)"
-                        options={DOH_PROVIDERS}
+                        options={providers}
                         closeOnSelect={true}
                         select={(v: string) => handleProviderChange(v)}
                         isSelected={(v: string) => v === currentProvider}

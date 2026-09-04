@@ -1,0 +1,22 @@
+[
+    {
+        "label": "Cloudflare (1.1.1.1)",
+        "url": "https://cloudflare-dns.com/dns-query"
+    },
+    {
+        "label": "Google (dns.google)",
+        "url": "https://dns.google/dns-query"
+    },
+    {
+        "label": "Newipe (newipe.qd.je) - Iran only",
+        "url": "https://newipe.qd.je/dns-query"
+    },
+    {
+        "label": "Quad9 (dns.quad9.net)",
+        "url": "https://dns.quad9.net/dns-query"
+    },
+    {
+        "label": "OpenDNS (doh.opendns.com)",
+        "url": "https://doh.opendns.com/dns-query"
+    }
+]

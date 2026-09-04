@@ -88,6 +88,8 @@ Pre-built binaries are available for all major platforms.
 
 ## ⚙️ How to Enable DoH
 
+The predefined DoH providers are loaded from [`resolvers.json`](resolvers.json) on startup. The app keeps the built-in provider list when the file cannot be reached, so updating that file on GitHub changes the provider list without requiring a Vesktop release.
+
 ### Method 1: First Launch & In-App Settings (Recommended)
 1. **On First Launch:** You will be greeted with a setup screen. Select your preferred DoH provider from the dropdown (or choose "Custom") and click **Submit**.
 2. **In-App Settings:** 
