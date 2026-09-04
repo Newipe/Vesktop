@@ -5,8 +5,7 @@
  */
 
 import { Heading, Margins, Paragraph } from "@vencord/types/components";
-import { Select, TextInput } from "@vencord/types/webpack/common";
-import { useEffect, useState } from "react";
+import { Select, TextInput, useEffect, useState } from "@vencord/types/webpack/common";
 
 import { DEFAULT_DOH_RESOLVERS, parseDohResolvers, REMOTE_DOH_RESOLVERS_URL } from "../../../shared/doh";
 import { SimpleErrorBoundary } from "../SimpleErrorBoundary";

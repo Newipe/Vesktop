@@ -259,7 +259,7 @@
                 new Option('Custom', 'custom')
             );
         })
-        .catch(() => {});
+        .catch(() => { });
 
     dohProviderSelect.addEventListener('change', (e) => {
         dohUrlLabel.style.display = e.target.value === 'custom' ? 'flex' : 'none';
