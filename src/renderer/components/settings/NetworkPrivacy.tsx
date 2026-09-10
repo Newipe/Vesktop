@@ -50,98 +50,97 @@ export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
 
     return (
         <div className={cl("network-privacy")}>
-                {/* Fragmentation Toggle */}
-                <SwitchItem
-                    note="Enable TCP SNI fragmentation to bypass DPI-based blocking. This splits TLS handshakes into smaller packets."
-                    value={settings.enableFragmentation ?? false}
-                    onChange={(value: boolean) => {
-                        settings.enableFragmentation = value;
-                    }}
-                >
-                    Fragmentation (DPI Bypass)
-                </SwitchItem>
+            {/* Fragmentation Toggle */}
+            <SwitchItem
+                note="Enable TCP SNI fragmentation to bypass DPI-based blocking. This splits TLS handshakes into smaller packets."
+                value={settings.enableFragmentation ?? false}
+                onChange={(value: boolean) => {
+                    settings.enableFragmentation = value;
+                }}
+            >
+                Fragmentation (DPI Bypass)
+            </SwitchItem>
 
-                {/* Fragmentation Profile Dropdown - Only shown when fragmentation is enabled */}
-                {settings.enableFragmentation && (
-                    <div style={{ marginTop: "8px", marginBottom: "8px" }}>
-                        <Select
-                            placeholder="FragA (Standard DPI)"
-                            options={[
-                                { label: "FragA (Standard DPI)", value: "FragA" },
-                                { label: "FragB (Aggressive DPI)", value: "FragB" }
-                            ]}
-                            closeOnSelect={true}
-                            select={(v: string) => {
-                                settings.fragProfile = v as "FragA" | "FragB";
-                            }}
-                            isSelected={(v: string) => v === (settings.fragProfile ?? "FragA")}
-                            serialize={(s: string) => s}
-                        />
-                    </div>
+            {/* Fragmentation Profile Dropdown - Only shown when fragmentation is enabled */}
+            {settings.enableFragmentation && (
+                <div style={{ marginTop: "8px", marginBottom: "8px" }}>
+                    <Select
+                        placeholder="FragA (Standard DPI)"
+                        options={[
+                            { label: "FragA (Standard DPI)", value: "FragA" },
+                            { label: "FragB (Aggressive DPI)", value: "FragB" }
+                        ]}
+                        closeOnSelect={true}
+                        select={(v: string) => {
+                            settings.fragProfile = v as "FragA" | "FragB";
+                        }}
+                        isSelected={(v: string) => v === (settings.fragProfile ?? "FragA")}
+                        serialize={(s: string) => s}
+                    />
+                </div>
+            )}
+
+            <Divider className={cl("category-divider")} style={{ margin: "12px 0" }} />
+
+            {/* UDP Noise Toggle */}
+            <SwitchItem
+                note="Generate dummy UDP packets to bypass WebRTC/Voice filtering. Sends 24 noise packets before actual voice data."
+                value={settings.enableUdpNoise ?? false}
+                onChange={(value: boolean) => {
+                    settings.enableUdpNoise = value;
+                }}
+            >
+                UDP Noise Generation
+            </SwitchItem>
+
+            <Divider className={cl("category-divider")} style={{ margin: "12px 0" }} />
+
+            {/* DNS over HTTPS (DoH) */}
+            <div>
+                <div style={{ marginBottom: "8px" }}>
+                    <h5 style={{ margin: 0 }}>DNS over HTTPS (DoH)</h5>
+                </div>
+                <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "var(--text-muted)" }}>
+                    Choose a secure DNS provider to encrypt your DNS queries and bypass restrictions.
+                </p>
+
+                <div style={{ marginBottom: currentProvider === "custom" ? "8px" : "0" }}>
+                    <Select
+                        placeholder="Off (Disabled)"
+                        options={providers}
+                        closeOnSelect={true}
+                        select={(v: string) => handleProviderChange(v)}
+                        isSelected={(v: string) => v === currentProvider}
+                        serialize={(s: string) => s}
+                    />
+                </div>
+
+                {currentProvider === "custom" && (
+                    <input
+                        type="text"
+                        value={settings.dohUrl || ""}
+                        placeholder="https://example.com/dns-query"
+                        onChange={e => {
+                            settings.dohUrl = e.currentTarget.value.trim() || undefined;
+                        }}
+                        style={{
+                            width: "100%",
+                            padding: "8px",
+                            borderRadius: "4px",
+                            border: "1px solid var(--background-modifier-accent)",
+                            backgroundColor: "var(--background-secondary-alt)",
+                            color: "var(--text-normal)"
+                        }}
+                    />
                 )}
+            </div>
 
-                <Divider className={cl("category-divider")} style={{ margin: "12px 0" }} />
-
-                {/* UDP Noise Toggle */}
-                <SwitchItem
-                    note="Generate dummy UDP packets to bypass WebRTC/Voice filtering. Sends 24 noise packets before actual voice data."
-                    value={settings.enableUdpNoise ?? false}
-                    onChange={(value: boolean) => {
-                        settings.enableUdpNoise = value;
-                    }}
-                >
-                    UDP Noise Generation
-                </SwitchItem>
-
-                <Divider className={cl("category-divider")} style={{ margin: "12px 0" }} />
-
-                {/* DNS over HTTPS (DoH) */}
-                <div>
-                    <div style={{ marginBottom: "8px" }}>
-                        <h5 style={{ margin: 0 }}>DNS over HTTPS (DoH)</h5>
-                    </div>
-                    <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "var(--text-muted)" }}>
-                        Choose a secure DNS provider to encrypt your DNS queries and bypass restrictions.
-                    </p>
-
-                    <div style={{ marginBottom: currentProvider === "custom" ? "8px" : "0" }}>
-                        <Select
-                            placeholder="Off (Disabled)"
-                            options={providers}
-                            closeOnSelect={true}
-                            select={(v: string) => handleProviderChange(v)}
-                            isSelected={(v: string) => v === currentProvider}
-                            serialize={(s: string) => s}
-                        />
-                    </div>
-
-                    {currentProvider === "custom" && (
-                        <input
-                            type="text"
-                            value={settings.dohUrl || ""}
-                            placeholder="https://example.com/dns-query"
-                            onChange={e => {
-                                settings.dohUrl = e.currentTarget.value.trim() || undefined;
-                            }}
-                            style={{
-                                width: "100%",
-                                padding: "8px",
-                                borderRadius: "4px",
-                                border: "1px solid var(--background-modifier-accent)",
-                                backgroundColor: "var(--background-secondary-alt)",
-                                color: "var(--text-normal)"
-                            }}
-                        />
-                    )}
-                </div>
-
-                {/* Info text */}
-                <div style={{ marginTop: "16px" }}>
-                    <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: 0 }}>
-                        These settings work together to provide comprehensive DPI bypass. Enable Fragmentation and UDP
-                        Noise for TCP/UDP traffic shaping, and DoH for encrypted DNS resolution.
-                    </p>
-                </div>
+            {/* Info text */}
+            <div style={{ marginTop: "16px" }}>
+                <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: 0 }}>
+                    These settings work together to provide comprehensive DPI bypass. Enable Fragmentation and UDP Noise
+                    for TCP/UDP traffic shaping, and DoH for encrypted DNS resolution.
+                </p>
             </div>
         </div>
     );

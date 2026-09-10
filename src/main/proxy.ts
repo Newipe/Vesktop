@@ -5,8 +5,12 @@
  */
 
 import * as dgram from "dgram";
+import { lookup as netLookupCallback } from "dns";
 import { app, session } from "electron";
-import { Server as NetServer, Socket as NetSocket } from "net";
+import { createConnection, createServer as createNetServer, Server as NetServer, Socket as NetSocket } from "net";
+import { promisify } from "util";
+
+const netLookup = promisify(netLookupCallback);
 
 import { Settings } from "./settings";
 
@@ -99,7 +103,7 @@ async function resolveHostname(hostname: string): Promise<string> {
         try {
             // Use Electron's built-in DNS resolution which respects DoH settings
             // The app.configureHostResolver already sets up DoH at the app level
-            const addresses = await net.lookup(hostname);
+            const addresses = await netLookup(hostname);
             if (addresses && typeof addresses === "object" && "address" in addresses) {
                 return addresses.address as string;
             }
@@ -116,8 +120,8 @@ async function resolveHostname(hostname: string): Promise<string> {
  * Create HTTP CONNECT proxy server for TCP traffic
  * This intercepts HTTPS/WSS connections and applies fragmentation to TLS handshakes
  */
-export function createHttpProxy(): NetServer {
-    const server = net.createServer();
+export function createHttpProxy() {
+    const server = createNetServer();
 
     server.on("connection", (clientSocket: NetSocket) => {
         let remoteSocket: NetSocket | null = null;
@@ -158,7 +162,7 @@ export function createHttpProxy(): NetServer {
                 const resolvedHost = await resolveHostname(targetHost);
 
                 // Create connection to remote server
-                remoteSocket = net.createConnection({
+                remoteSocket = createConnection({
                     host: resolvedHost,
                     port: targetPort
                 });
@@ -317,9 +321,9 @@ class UdpNoiseGenerator {
  * Create SOCKS5 proxy server for UDP ASSOCIATE support
  * This handles WebRTC UDP traffic and applies noise generation
  */
-export function createSocks5Proxy(): NetServer {
+export function createSocks5Proxy() {
     const udpNoise = new UdpNoiseGenerator();
-    const server = net.createServer();
+    const server = createNetServer();
 
     server.on("connection", (clientSocket: NetSocket) => {
         let udpSocket: dgram.Socket | null = null;
