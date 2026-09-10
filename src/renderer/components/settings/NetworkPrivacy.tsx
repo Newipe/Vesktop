@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Divider, Margins, Select, SwitchItem } from "@vencord/types/components";
+import { Divider, Select, SwitchItem } from "@vencord/types/components";
 import { React, useEffect, useState } from "@vencord/types/webpack/common";
 
 import { DEFAULT_DOH_RESOLVERS, parseDohResolvers, REMOTE_DOH_RESOLVERS_URL } from "../../../shared/doh";
-import { cl } from "./Settings";
-import { SimpleErrorBoundary, SettingsComponent } from "./Settings";
+import { cl, SettingsComponent, SimpleErrorBoundary } from "./Settings";
 
 export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
     const [resolvers, setResolvers] = useState(DEFAULT_DOH_RESOLVERS);
@@ -140,9 +139,8 @@ export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
                 {/* Info text */}
                 <div style={{ marginTop: "16px" }}>
                     <p style={{ fontSize: "12px", color: "var(--text-muted)", margin: 0 }}>
-                        These settings work together to provide comprehensive DPI bypass.
-                        Enable Fragmentation and UDP Noise for TCP/UDP traffic shaping,
-                        and DoH for encrypted DNS resolution.
+                        These settings work together to provide comprehensive DPI bypass. Enable Fragmentation and UDP
+                        Noise for TCP/UDP traffic shaping, and DoH for encrypted DNS resolution.
                     </p>
                 </div>
             </div>

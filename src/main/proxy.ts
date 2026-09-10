@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { net, Server as NetServer, Socket as NetSocket } from "net";
 import * as dgram from "dgram";
 import { app, session } from "electron";
+import { net, Server as NetServer, Socket as NetSocket } from "net";
+
 import { Settings } from "./settings";
 
 const PROXY_PORT = 3128;
@@ -43,7 +44,7 @@ interface FragmentationState {
  */
 async function applyFragmentation(socket: NetSocket, data: Buffer, state: FragmentationState): Promise<void> {
     const { profile, isFirstWrite } = state;
-    
+
     if (!isFirstWrite) {
         // For subsequent writes, just pass through normally after initial fragmentation
         socket.write(data);
@@ -57,10 +58,10 @@ async function applyFragmentation(socket: NetSocket, data: Buffer, state: Fragme
     const baseDelay = isFirstWrite ? profile.firstDelay : profile.subsequentDelay;
 
     let offset = 0;
-    
+
     for (let i = 0; i < chunks.length; i++) {
         const chunkSize = chunks[i];
-        
+
         if (chunkSize === 0) {
             // Zero-length chunk - send empty buffer to trigger TCP ACK
             socket.write(Buffer.alloc(0));
@@ -92,14 +93,14 @@ async function applyFragmentation(socket: NetSocket, data: Buffer, state: Fragme
 async function resolveHostname(hostname: string): Promise<string> {
     // Check if DoH is enabled in settings
     const dohEnabled = Settings.store.enableDoh;
-    const dohUrl = Settings.store.dohUrl;
+    const { dohUrl } = Settings.store;
 
     if (dohEnabled && dohUrl) {
         try {
             // Use Electron's built-in DNS resolution which respects DoH settings
             // The app.configureHostResolver already sets up DoH at the app level
             const addresses = await net.lookup(hostname);
-            if (addresses && typeof addresses === 'object' && 'address' in addresses) {
+            if (addresses && typeof addresses === "object" && "address" in addresses) {
                 return addresses.address as string;
             }
         } catch (err) {
@@ -140,7 +141,7 @@ export function createHttpProxy(): NetServer {
 
             // Parse HTTP CONNECT request
             const connectMatch = firstLine.match(/^CONNECT\s+([^\s]+):(\d+)\s+HTTP\/1\.[01]$/i);
-            
+
             if (!connectMatch) {
                 clientSocket.end("HTTP/1.1 400 Bad Request\r\n\r\n");
                 return;
@@ -171,7 +172,7 @@ export function createHttpProxy(): NetServer {
                     profile: FRAG_PROFILES[fragProfile as keyof typeof FRAG_PROFILES] || FRAG_PROFILES.FragA
                 };
 
-                remoteSocket.on("error", (err) => {
+                remoteSocket.on("error", err => {
                     console.error("[VesktopProxy] Remote socket error:", err.message);
                     cleanup();
                 });
@@ -204,7 +205,7 @@ export function createHttpProxy(): NetServer {
                     }
                 });
 
-                clientSocket.on("error", (err) => {
+                clientSocket.on("error", err => {
                     if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
                         console.error("[VesktopProxy] Client socket error:", err.message);
                     }
@@ -214,14 +215,13 @@ export function createHttpProxy(): NetServer {
                 clientSocket.on("close", () => {
                     cleanup();
                 });
-
             } catch (err) {
                 console.error("[VesktopProxy] Connection error:", err);
                 clientSocket.end("HTTP/1.1 502 Bad Gateway\r\n\r\n");
             }
         });
 
-        clientSocket.on("error", (err) => {
+        clientSocket.on("error", err => {
             if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
                 console.error("[VesktopProxy] Initial socket error:", err.message);
             }
@@ -233,7 +233,7 @@ export function createHttpProxy(): NetServer {
         });
     });
 
-    server.on("error", (err) => {
+    server.on("error", err => {
         console.error("[VesktopProxy] Proxy server error:", err);
     });
 
@@ -254,7 +254,7 @@ class UdpNoiseGenerator {
 
     constructor() {
         this.client = dgram.createSocket("udp4");
-        this.client.on("error", (err) => {
+        this.client.on("error", err => {
             console.error("[VesktopProxy] UDP noise error:", err);
         });
     }
@@ -286,9 +286,9 @@ class UdpNoiseGenerator {
 
             for (let i = 0; i < this.packetCount; i++) {
                 const payload = this.generateRandomPayload();
-                
+
                 await new Promise<void>((resolve, reject) => {
-                    this.client.send(payload, targetPort, resolvedHost, (err) => {
+                    this.client.send(payload, targetPort, resolvedHost, err => {
                         if (err) reject(err);
                         else resolve();
                     });
@@ -364,19 +364,24 @@ export function createSocks5Proxy(): NetServer {
                     let offset = 4;
 
                     // Parse address based on type
-                    if (addrType === 0x01) { // IPv4
+                    if (addrType === 0x01) {
+                        // IPv4
                         host = `${data[offset]}.${data[offset + 1]}.${data[offset + 2]}.${data[offset + 3]}`;
                         offset += 4;
-                    } else if (addrType === 0x03) { // Domain name
+                    } else if (addrType === 0x03) {
+                        // Domain name
                         const domainLen = data[offset];
                         host = data.slice(offset + 1, offset + 1 + domainLen).toString("ascii");
                         offset += 1 + domainLen;
-                    } else if (addrType === 0x04) { // IPv6
+                    } else if (addrType === 0x04) {
+                        // IPv6
                         const parts: number[] = [];
                         for (let i = 0; i < 16; i++) {
                             parts.push(data[offset + i]);
                         }
-                        host = parts.map((b, i) => i % 2 === 0 ? b.toString(16) : b.toString(16).padStart(2, '0')).join(':');
+                        host = parts
+                            .map((b, i) => (i % 2 === 0 ? b.toString(16) : b.toString(16).padStart(2, "0")))
+                            .join(":");
                         offset += 16;
                     } else {
                         clientSocket.end();
@@ -385,19 +390,26 @@ export function createSocks5Proxy(): NetServer {
 
                     const port = (data[offset] << 8) | data[offset + 1];
 
-                    if (cmd === 0x01) { // CONNECT
+                    if (cmd === 0x01) {
+                        // CONNECT
                         // TCP connection - not handled here, would need additional logic
                         clientSocket.end();
-                    } else if (cmd === 0x03) { // UDP ASSOCIATE
+                    } else if (cmd === 0x03) {
+                        // UDP ASSOCIATE
                         // Create UDP association
                         udpSocket = dgram.createSocket("udp4");
-                        
+
                         udpSocket.on("listening", () => {
                             const address = udpSocket!.address();
                             const reply = Buffer.from([
-                                0x05, 0x00, 0x00, // Version, success, reserved
+                                0x05,
+                                0x00,
+                                0x00, // Version, success, reserved
                                 0x01, // IPv4
-                                0x00, 0x00, 0x00, 0x00, // Bind address (0.0.0.0)
+                                0x00,
+                                0x00,
+                                0x00,
+                                0x00, // Bind address (0.0.0.0)
                                 (address.port >> 8) & 0xff, // Port high byte
                                 address.port & 0xff // Port low byte
                             ]);
@@ -416,7 +428,7 @@ export function createSocks5Proxy(): NetServer {
                             }
                         });
 
-                        udpSocket.on("error", (err) => {
+                        udpSocket.on("error", err => {
                             console.error("[VesktopProxy] UDP association error:", err);
                             cleanup();
                         });
@@ -436,7 +448,7 @@ export function createSocks5Proxy(): NetServer {
             }
         });
 
-        clientSocket.on("error", (err) => {
+        clientSocket.on("error", err => {
             if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
                 console.error("[VesktopProxy] SOCKS5 client error:", err.message);
             }
@@ -452,7 +464,7 @@ export function createSocks5Proxy(): NetServer {
         });
     });
 
-    server.on("error", (err) => {
+    server.on("error", err => {
         console.error("[VesktopProxy] SOCKS5 server error:", err);
     });
 
@@ -520,7 +532,7 @@ export function applyProxySettings() {
     if (!app.isReady()) return;
 
     const proxyUrl = getProxyUrl();
-    
+
     if (proxyUrl) {
         // Set proxy for default session
         const ses = session.defaultSession;
@@ -528,7 +540,7 @@ export function applyProxySettings() {
             .then(() => {
                 console.log("[VesktopProxy] Proxy applied to Electron session");
             })
-            .catch((err) => {
+            .catch(err => {
                 console.error("[VesktopProxy] Failed to apply proxy:", err);
             });
     } else {
@@ -538,7 +550,7 @@ export function applyProxySettings() {
             .then(() => {
                 console.log("[VesktopProxy] Proxy removed from Electron session");
             })
-            .catch((err) => {
+            .catch(err => {
                 console.error("[VesktopProxy] Failed to remove proxy:", err);
             });
     }
@@ -557,4 +569,4 @@ if (typeof Settings.addChangeListener === "function") {
     });
 }
 
-export { startProxy, stopProxy, applyProxySettings };
+export { applyProxySettings, startProxy, stopProxy };
