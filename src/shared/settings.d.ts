@@ -43,6 +43,11 @@ export interface Settings {
     enableDoh?: boolean;
     dohUrl?: string | undefined;
 
+    // Network & Privacy - DPI Bypass settings
+    enableFragmentation?: boolean;
+    fragProfile?: "FragA" | "FragB";
+    enableUdpNoise?: boolean;
+
     audio?: {
         workaround?: boolean;
 

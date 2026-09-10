@@ -9,6 +9,7 @@ import "./updater";
 import "./ipc";
 import "./userAssets";
 import "./vesktopProtocol";
+import "./proxy";
 
 import { app, BrowserWindow, nativeTheme } from "electron";
 
@@ -107,6 +108,11 @@ function init() {
         registerMediaPermissionsHandler();
 
         applyDohSettings();
+
+        // Start the local proxy server for fragmentation and UDP noise
+        const { startProxy, applyProxySettings } = require("./proxy");
+        startProxy();
+        applyProxySettings();
 
         bootstrap();
 

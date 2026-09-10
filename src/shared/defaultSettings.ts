@@ -29,5 +29,9 @@ export const DefaultVesktopSettings: Settings = {
     splashPixelated: false,
     webRTCIPHandlingPolicy: "default",
     appBadge: true,
-    transparencyOption: "none"
+    transparencyOption: "none",
+    // Network & Privacy defaults
+    enableFragmentation: false,
+    fragProfile: "FragA",
+    enableUdpNoise: false
 };
