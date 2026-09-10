@@ -4,14 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Divider, Margins } from "@vencord/types/components";
-import { Select, SwitchItem } from "@vencord/types/components";
+import { Divider, Margins, Select, SwitchItem } from "@vencord/types/components";
 import { React, useEffect, useState } from "@vencord/types/webpack/common";
 
 import { DEFAULT_DOH_RESOLVERS, parseDohResolvers, REMOTE_DOH_RESOLVERS_URL } from "../../../shared/doh";
 import { cl } from "./Settings";
-import { SimpleErrorBoundary } from "../SimpleErrorBoundary";
-import { SettingsComponent } from "./Settings";
+import { SimpleErrorBoundary, SettingsComponent } from "./Settings";
 
 export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
     const [resolvers, setResolvers] = useState(DEFAULT_DOH_RESOLVERS);

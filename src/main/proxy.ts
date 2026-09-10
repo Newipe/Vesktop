@@ -361,7 +361,6 @@ export function createSocks5Proxy(): NetServer {
                     const addrType = data[3];
 
                     let host: string;
-                    let port: number;
                     let offset = 4;
 
                     // Parse address based on type
@@ -384,7 +383,7 @@ export function createSocks5Proxy(): NetServer {
                         return;
                     }
 
-                    port = (data[offset] << 8) | data[offset + 1];
+                    const port = (data[offset] << 8) | data[offset + 1];
 
                     if (cmd === 0x01) { // CONNECT
                         // TCP connection - not handled here, would need additional logic
