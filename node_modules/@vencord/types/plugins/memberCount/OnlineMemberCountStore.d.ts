@@ -1,0 +1,20 @@
+export declare const OnlineMemberCountStore: {
+    getCount(guildId?: string): number | undefined;
+    _ensureCount(guildId: string): Promise<void>;
+    ensureCount(guildId?: string): void;
+    getName(): string;
+    addChangeListener(callback: import("@vencord/discord-types").Callback): void;
+    addConditionalChangeListener(callback: () => boolean, preemptive?: boolean): void;
+    addReactChangeListener(callback: import("@vencord/discord-types").Callback): void;
+    removeChangeListener(callback: import("@vencord/discord-types").Callback): void;
+    removeReactChangeListener(callback: import("@vencord/discord-types").Callback): void;
+    doEmitChanges(event: import("@vencord/discord-types").FluxEvent): void;
+    emitChange(): void;
+    getDispatchToken(): string;
+    initialize(): void;
+    initializeIfNeeded(): void;
+    mustEmitChanges(callback?: import("@vencord/discord-types").ActionHandler): void;
+    registerActionHandlers(actionHandlers: import("@vencord/discord-types").ActionHandlers, band?: number): void;
+    syncWith(stores: import("@vencord/discord-types").FluxStore[], callback: import("@vencord/discord-types").SyncCallback, timeout?: number): void;
+    waitFor(...stores: import("@vencord/discord-types").FluxStore[]): void;
+};

@@ -1,0 +1,10 @@
+export declare const BASE_URL = "https://decor.fieryflames.dev";
+export declare const API_URL: string;
+export declare const AUTHORIZE_URL: string;
+export declare const CDN_URL = "https://ugc.decor.fieryflames.dev";
+export declare const CLIENT_ID = "1096966363416899624";
+export declare const SKU_ID = "100101099111114";
+export declare const RAW_SKU_ID = "11497119";
+export declare const GUILD_ID = "1096357702931841148";
+export declare const INVITE_KEY = "dXp2SdxDcP";
+export declare const DECORATION_FETCH_COOLDOWN: number;

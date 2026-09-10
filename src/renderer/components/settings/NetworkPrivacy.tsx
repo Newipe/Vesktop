@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Divider, SwitchItem } from "@vencord/types/components";
+import { Divider } from "@vencord/types/components";
 import { React, Select, useEffect, useState } from "@vencord/types/webpack/common";
 
 import { DEFAULT_DOH_RESOLVERS, parseDohResolvers, REMOTE_DOH_RESOLVERS_URL } from "../../../shared/doh";
 import { cl, SettingsComponent } from "./Settings";
+import { VesktopSettingsSwitch } from "./VesktopSettingsSwitch";
 
 export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
     const [resolvers, setResolvers] = useState(DEFAULT_DOH_RESOLVERS);
@@ -51,15 +52,17 @@ export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
     return (
         <div className={cl("network-privacy")}>
             {/* Fragmentation Toggle */}
-            <SwitchItem
-                note="Enable TCP SNI fragmentation to bypass DPI-based blocking. This splits TLS handshakes into smaller packets."
+            <VesktopSettingsSwitch
+                title="Fragmentation (DPI Bypass)"
                 value={settings.enableFragmentation ?? false}
                 onChange={(value: boolean) => {
                     settings.enableFragmentation = value;
                 }}
-            >
-                Fragmentation (DPI Bypass)
-            </SwitchItem>
+            />
+            <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "var(--text-muted)" }}>
+                Enable TCP SNI fragmentation to bypass DPI-based blocking. This splits TLS handshakes into smaller
+                packets.
+            </p>
 
             {/* Fragmentation Profile Dropdown - Only shown when fragmentation is enabled */}
             {settings.enableFragmentation && (
@@ -83,15 +86,17 @@ export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
             <Divider className={cl("category-divider")} style={{ margin: "12px 0" }} />
 
             {/* UDP Noise Toggle */}
-            <SwitchItem
-                note="Generate dummy UDP packets to bypass WebRTC/Voice filtering. Sends 24 noise packets before actual voice data."
+            <VesktopSettingsSwitch
+                title="UDP Noise Generation"
                 value={settings.enableUdpNoise ?? false}
                 onChange={(value: boolean) => {
                     settings.enableUdpNoise = value;
                 }}
-            >
-                UDP Noise Generation
-            </SwitchItem>
+            />
+            <p style={{ margin: "0 0 8px 0", fontSize: "14px", color: "var(--text-muted)" }}>
+                Generate dummy UDP packets to bypass WebRTC/Voice filtering. Sends 24 noise packets before actual voice
+                data.
+            </p>
 
             <Divider className={cl("category-divider")} style={{ margin: "12px 0" }} />
 
