@@ -6,7 +6,7 @@
 
 import * as dgram from "dgram";
 import { app, session } from "electron";
-import { net, Server as NetServer, Socket as NetSocket } from "net";
+import { Server as NetServer, Socket as NetSocket } from "net";
 
 import { Settings } from "./settings";
 
@@ -172,7 +172,7 @@ export function createHttpProxy(): NetServer {
                     profile: FRAG_PROFILES[fragProfile as keyof typeof FRAG_PROFILES] || FRAG_PROFILES.FragA
                 };
 
-                remoteSocket.on("error", err => {
+                remoteSocket.on("error", (err: any) => {
                     console.error("[VesktopProxy] Remote socket error:", err.message);
                     cleanup();
                 });
@@ -205,7 +205,7 @@ export function createHttpProxy(): NetServer {
                     }
                 });
 
-                clientSocket.on("error", err => {
+                clientSocket.on("error", (err: any) => {
                     if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
                         console.error("[VesktopProxy] Client socket error:", err.message);
                     }
@@ -221,7 +221,7 @@ export function createHttpProxy(): NetServer {
             }
         });
 
-        clientSocket.on("error", err => {
+        clientSocket.on("error", (err: any) => {
             if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
                 console.error("[VesktopProxy] Initial socket error:", err.message);
             }
@@ -233,7 +233,7 @@ export function createHttpProxy(): NetServer {
         });
     });
 
-    server.on("error", err => {
+    server.on("error", (err: any) => {
         console.error("[VesktopProxy] Proxy server error:", err);
     });
 
@@ -428,7 +428,7 @@ export function createSocks5Proxy(): NetServer {
                             }
                         });
 
-                        udpSocket.on("error", err => {
+                        udpSocket.on("error", (err: any) => {
                             console.error("[VesktopProxy] UDP association error:", err);
                             cleanup();
                         });
@@ -442,13 +442,13 @@ export function createSocks5Proxy(): NetServer {
                     // Already in UDP ASSOCIATE mode, ignore further TCP data
                     // UDP data goes through the UDP socket
                 }
-            } catch (err) {
+            } catch (err: any) {
                 console.error("[VesktopProxy] SOCKS5 handling error:", err);
                 cleanup();
             }
         });
 
-        clientSocket.on("error", err => {
+        clientSocket.on("error", (err: any) => {
             if (err.code !== "ECONNRESET" && err.code !== "EPIPE") {
                 console.error("[VesktopProxy] SOCKS5 client error:", err.message);
             }
@@ -568,5 +568,3 @@ if (typeof Settings.addChangeListener === "function") {
         // Profile change doesn't require proxy restart, it's applied per-connection
     });
 }
-
-export { applyProxySettings, startProxy, stopProxy };

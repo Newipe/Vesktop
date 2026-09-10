@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: GPL-3.0-or-later
  */
 
-import { Divider, Select, SwitchItem } from "@vencord/types/components";
-import { React, useEffect, useState } from "@vencord/types/webpack/common";
+import { Divider, SwitchItem } from "@vencord/types/components";
+import { React, Select, useEffect, useState } from "@vencord/types/webpack/common";
 
 import { DEFAULT_DOH_RESOLVERS, parseDohResolvers, REMOTE_DOH_RESOLVERS_URL } from "../../../shared/doh";
-import { cl, SettingsComponent, SimpleErrorBoundary } from "./Settings";
+import { cl, SettingsComponent } from "./Settings";
 
 export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
     const [resolvers, setResolvers] = useState(DEFAULT_DOH_RESOLVERS);
@@ -49,8 +49,7 @@ export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
     };
 
     return (
-        <SimpleErrorBoundary>
-            <div className={cl("network-privacy")}>
+        <div className={cl("network-privacy")}>
                 {/* Fragmentation Toggle */}
                 <SwitchItem
                     note="Enable TCP SNI fragmentation to bypass DPI-based blocking. This splits TLS handshakes into smaller packets."
@@ -144,6 +143,6 @@ export const NetworkPrivacy: SettingsComponent = ({ settings }) => {
                     </p>
                 </div>
             </div>
-        </SimpleErrorBoundary>
+        </div>
     );
 };
